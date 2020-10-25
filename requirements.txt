@@ -1,0 +1,12 @@
+numpy
+pandas
+requests
+sqlalchemy
+psycopg2-binary
+plotly
+dash
+dash-daq
+dash-bootstrap-components
+dash-table
+flask
+gunicorn
