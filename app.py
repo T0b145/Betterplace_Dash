@@ -225,7 +225,10 @@ def donations_per_day(df_donations_id):
         days_dif = dif.days+ (dif.seconds/60/60/24)
         df_dif.loc[list(df_pivot.sum().index)[i+1]] = ((df_pivot.sum().iloc[i+1]- df_pivot.sum().iloc[i])/days_dif)
 
-    fig = px.line(df_dif)
+    daily_donations_per_month = df_dif.groupby(pd.Grouper(freq="M"))
+    daily_donations_per_month = daily_donations_per_month.mean()
+
+    fig = px.line(daily_donations_per_month)
     fig.update_layout(
         showlegend=False,
         yaxis_title="Aver. daily donations",
