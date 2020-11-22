@@ -365,7 +365,8 @@ app.layout = html.Div(
                     #className="four column",
                     children=[description_card(), html.Hr(),Trending_Projects(df_donations_id, df_latest)]
                     ),
-                width = 4
+                className="d-none d-sm-block col-sm-4"
+                #width = 4
             ),
             dbc.Col(
                 html.Div(
@@ -373,7 +374,8 @@ app.layout = html.Div(
                     #className="eight column",
                     children=[project_summary(df_latest) ,need_map(df_latest), target_per_country(df_donations_country), donations_per_day(df_donations_id), tag_popularity(df_latest), donation_history_years(df_donation_history_years)]
                     ),
-                width = 8
+                className="col-xs-12 col-sm-8"
+                #width = 8
             )
             ]
         )
