@@ -22,12 +22,10 @@ import plotly.express as px
 
 #### Server Setup: ###
 external_stylesheets = [dbc.themes.BOOTSTRAP]
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}]
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, meta_tags=meta_tags)
 app.title='Betterplace my money'
-#Uncomment for production
-# app = dash.Dash(__name__, external_stylesheets=external_stylesheets, requests_pathname_prefix='/benchmark_db/')
-# app.url_base_pathname = '/benchmark_db/'
-# app.routes_pathname_prefix = app.url_base_pathname
+
 server = app.server
 app.config.suppress_callback_exceptions = True
 
