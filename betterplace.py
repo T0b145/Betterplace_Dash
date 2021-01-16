@@ -21,6 +21,7 @@ class betterplace(object):
         per_page = 50
         page = 1
         max_pages = 2
+        dt_last_week = datetime.now()-timedelta(days = 7)
 
         while page <= max_pages:
             url_project_query = url.format(per_page, page)
@@ -37,10 +38,15 @@ class betterplace(object):
                 for project in r_js["data"]:
                     try:
                         self.parse_overview_data_original(project)
+                        updated_at = datetime.strptime(project["updated_at"], "%Y-%m-%dT%H:%M:%S%z").replace(tzinfo=None)
                     except Exception as e:
                         logging.error(e)
             if full_search is True:
-                max_pages = r_js["total_pages"]
+                if dt_last_week > updated_at:
+                    max_pages = page
+                    logging.info("Stopping processing, update complete")
+                else:
+                    max_pages = r_js["total_pages"]
             page += 1
             logging.info("Progress {}|{} ({})".format(max_pages,page-1,updated_at))
 
@@ -197,10 +203,10 @@ if __name__ == '__main__':
     betterplace = betterplace()
     try:
         if update_all is True:
-            url_all = "https://api.betterplace.org/de/api_v4/projects.json?facets=closed%3Atrue&order=rank%3ADESC&per_page={}&page={}"
+            url_all = "https://api.betterplace.org/de/api_v4/projects.json?facets=closed%3Atrue&order=updated_at%3ADESC&per_page={}&page={}"
             betterplace.get_projects(url_all, full_search=full_search_flag)
         else:
-            url_update = "https://api.betterplace.org/de/api_v4/projects.json?facets=closed%3Afalse&order=rank%3ADESC&per_page={}&page={}"
+            url_update = "https://api.betterplace.org/de/api_v4/projects.json?facets=closed%3Afalse&order=updated_at%3ADESC&per_page={}&page={}"
             betterplace.get_projects(url_update, full_search=full_search_flag)
         logging.info("Saving Files ...")
 
