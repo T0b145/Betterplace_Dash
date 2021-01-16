@@ -1,11 +1,14 @@
 import os
 from argparse import ArgumentParser
 from datetime import datetime, timezone, timedelta
+import logging
 import time
 import pandas as pd
 import sqlite3
 import sqlalchemy
 import requests
+
+logging.basicConfig(level=logging.INFO)
 
 class betterplace(object):
     """Betterplace handler"""
@@ -35,11 +38,11 @@ class betterplace(object):
                     try:
                         self.parse_overview_data_original(project)
                     except Exception as e:
-                        print (e)
+                        logging.error(e)
             if full_search is True:
                 max_pages = r_js["total_pages"]
             page += 1
-            print ("Progress",max_pages,"|", page-1)
+            logging.info("Progress {}|{} ({})".format(max_pages,page-1,updated_at))
 
     def parse_overview_data(self, data):
         tags = self.get_tags(data["links"])
@@ -199,18 +202,18 @@ if __name__ == '__main__':
         else:
             url_update = "https://api.betterplace.org/de/api_v4/projects.json?facets=closed%3Afalse&order=rank%3ADESC&per_page={}&page={}"
             betterplace.get_projects(url_update, full_search=full_search_flag)
-        print ("Saving Files ...")
+        logging.info("Saving Files ...")
 
         if full_search_flag is False:
             betterplace.save_to_sql("projects_vf_backup")
         else:
             betterplace.save_to_sql("projects_vf")
-        print ("Downloaded Projects: ", betterplace.total_projects)
-        print ("Time needed: ", datetime.now() - betterplace.download_time)
+        logging.info("Downloaded Projects: {}".format(betterplace.total_projects))
+        logging.info("Time needed: {}".format(datetime.now() - betterplace.download_time))
     except Exception as e:
-        print (e)
+        logging.error(e)
         betterplace.save_to_parquet()
-        print ("Error, but Results saved to parquet")
+        logging.error("Error, but Results saved to parquet")
 
 
 
