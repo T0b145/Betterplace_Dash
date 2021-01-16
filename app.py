@@ -155,7 +155,11 @@ def need_map(df_latest):
     hover_data = ["carrier_name"],
     labels = {value:"Donations (€)"}
     )
-    fig.update_layout(showlegend=False, margin= {"l":2,"r":2, "t":2,"b":2}, updatemenus= [{"type":"dropdown"}])
+    fig.update_layout(
+        showlegend=False,
+        margin= {"l":2,"r":2, "t":2,"b":2},
+        updatemenus= [{"type":"dropdown"}],
+        hovermode=False)
     return dbc.Card([
     dbc.CardHeader(html.B(title)),
     dbc.CardBody([dcc.Graph(figure=fig)])
