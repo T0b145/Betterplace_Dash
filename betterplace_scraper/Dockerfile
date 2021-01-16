@@ -12,4 +12,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 VOLUME /home/project/app/logs
 
 #ENTRYPOINT ["tail", "-f", "/dev/null"]
-CMD ["python3", "betterplace.py", "-t"]
+CMD ["python3", "betterplace.py"]
