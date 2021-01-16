@@ -1,14 +1,15 @@
 import os
 from argparse import ArgumentParser
-from datetime import datetime, timezone, timedelta
 import logging
+from datetime import datetime, timezone, timedelta
 import time
+import dateutil.parser
 import pandas as pd
 import sqlite3
 import sqlalchemy
 import requests
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename='./logs/betterplace.log', filemode='w', level=logging.INFO)
 
 class betterplace(object):
     """Betterplace handler"""
@@ -38,7 +39,7 @@ class betterplace(object):
                 for project in r_js["data"]:
                     try:
                         self.parse_overview_data_original(project)
-                        updated_at = datetime.strptime(project["updated_at"], "%Y-%m-%dT%H:%M:%S%z").replace(tzinfo=None)
+                        updated_at = dateutil.parser.parse(project["updated_at"]).replace(tzinfo=None)
                     except Exception as e:
                         logging.error(e)
             if full_search is True:
@@ -123,11 +124,6 @@ class betterplace(object):
                 continue
         return tag
 
-    def save_to_parquet(self):
-        now = datetime.now()
-        datetime_now = now.strftime("%Y%m%d_%H%M")
-        path = "./Output/"+datetime_now+".parquet"
-        self.df_projects.to_parquet(path, compression="gzip")
 
     def save_to_excel(self):
         now = datetime.now()
@@ -212,16 +208,13 @@ if __name__ == '__main__':
 
         if full_search_flag is False:
             betterplace.save_to_sql("projects_vf_backup")
+            logging.info("Saved to Backup_Table at: {}".format(datetime.now()))
         else:
             betterplace.save_to_sql("projects_vf")
+            logging.info("Saved to DB at: {}".format(datetime.now()))
         logging.info("Downloaded Projects: {}".format(betterplace.total_projects))
         logging.info("Time needed: {}".format(datetime.now() - betterplace.download_time))
     except Exception as e:
         logging.error(e)
-        betterplace.save_to_parquet()
-        logging.error("Error, but Results saved to parquet")
-
-
-
 
     # ETF print ("Time needed: ", ((datetime.now() - betterplace.download_time)/10)*100+datetime.now()+timedelta(hours=1))
