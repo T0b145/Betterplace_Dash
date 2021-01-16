@@ -143,16 +143,17 @@ def need_map(df_latest):
     #df_group = df.groupby(["latitude", "longitude"], as_index=False).agg({value: 'sum', "country":"first"})
     #df_latest = df.query('country != "Deutschland"')
 
-    fig = px.scatter_mapbox(df_latest,
+    fig = px.density_mapbox(df_latest,
     lat="latitude",
     lon="longitude",
-    color="country",
-    size=value,
-    color_continuous_scale=px.colors.cyclical.IceFire,
-    size_max=25,
+    #color="country",
+    z=value,
+    #color_continuous_scale=px.colors.cyclical.IceFire,
+    radius=15,
     zoom=1,
     hover_name="title",
-    hover_data = ["carrier_name"]
+    hover_data = ["carrier_name"],
+    labels = {value:"Donations (€)"}
     )
     fig.update_layout(showlegend=False, margin= {"l":2,"r":2, "t":2,"b":2}, updatemenus= [{"type":"dropdown"}])
     return dbc.Card([
