@@ -1,0 +1,6 @@
+pandas
+pysqlite3
+sqlalchemy
+psycopg2-binary
+python-dateutil
+requests
